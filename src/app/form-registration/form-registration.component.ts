@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Registration } from '../models/registration'
+import { RegistrationService } from '../services/registration-service.service';
+import { Registration } from '../models/registration';
+import { TouchSequence } from 'selenium-webdriver';
 @Component({
   selector: 'app-form-registration',
   templateUrl: './form-registration.component.html',
@@ -7,44 +9,19 @@ import { Registration } from '../models/registration'
 })
 export class FormRegistrationComponent implements OnInit {
 
-  constructor() { 
-    this.regModel = new Registration();
+  regModel: Registration;
+
+  constructor(private regService: RegistrationService) {
+    this.regModel = (this.regService.type == 'save' ) ? new Registration() : this.regService.selectedRow ;
   }
 
-  // It maintains list of Registrations
-	registrations: Registration[] = [];
-	// It maintains registration Model
-	regModel: Registration;
-	// It maintains registration form display status. By default it will be false.
-	showNew: Boolean = false;
-	// It will be either 'Save' or 'Update' based on operation.
-	submitType: string = 'Save';
-	// It maintains table row index based on selection.
-	selectedRow: number;
-	// It maintains Array of countries.
 	countries: string[] = ['US', 'UK', 'India', 'UAE'];
 
   ngOnInit() {
   }
 
-	onNew() { 
-  	this.regModel = new Registration();
-
-  	this.submitType = 'Save';
-
-  	this.showNew = true;
-  }
-
-  onEdit(Number:number){
-    console.log('#____ Update Registration number '+Number);
-  }
-
-  onDelete(Number:number){
-    console.log('#____ Delete Registration number '+Number);
-  }
-
   onSave(){
-    console.log('#________ ON SAVE CLICKED');
-    console.log(this.regModel);
+    this.regService.onCreate(this.regModel);
   }
+
 }
